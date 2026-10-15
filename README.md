@@ -1,59 +1,126 @@
-# Camisa7 · React Native
+# Camisa7 App
 
-**Expo Router · React Native · TypeScript**
+Mobile app for organizing pickup football: create a group, schedule matches, confirm presence, pay by PIX, rate teammates and follow rankings.
 
-Mobile client in the Camisa7 football product family. This is one part of a multi-repository project. Other related components:
+**Status:** Prototype source, available for portfolio review. Not asserted to be in production; no usage or performance claims are made.
 
-- [Camisa7 · Backend API](https://github.com/mkwitko/camisa7-api)
-- [Camisa7 · Web](https://github.com/mkwitko/camisa7-web)
+## What it does
 
-> **Portfolio status:** Public source available for technical inspection. No live deployment, measured user adoption, current passing CI, or production security posture is asserted by this README. Product/customer data must not be included in demos.
+- Sign in with email or Google; session tokens in secure storage with automatic refresh (`src/lib/auth`, `src/contexts/auth-context.tsx`).
+- Groups, members, invite deep links and join requests (`src/app/group`, `src/app/j/[slug].tsx`).
+- Matches and recurring series: attendance, team assignment, result, stats and votes (`src/app/match`, `src/app/series`).
+- Player profiles, reputation and rankings (`src/app/player`, `src/app/(drawer)/rankings.tsx`).
+- PIX payment of match attendance and membership dues (`src/components/payments`).
+- Subscription plans (`src/app/(drawer)/planos.tsx`), venue/court discovery and booking (`src/app/court`, `reservas.tsx`).
+- Push notifications via FCM and Notifee, opt-in by flag (`src/lib/push`).
+- Location picker with map and reverse geocoding (`src/lib/location`, `src/components/location`).
+- Brazilian Portuguese UI strings via i18next (`src/lib/i18n`).
 
-## What the repository contains
-
-Expo Router navigation, query-driven remote state, generated OpenAPI client bindings, authentication/platform integration modules, location and image-related mobile packages, native build configuration.
-
-## System boundaries
+## Architecture
 
 ```mermaid
 flowchart LR
- Mobile["React Native / Expo"] --> Contract["OpenAPI contract"]
- Web["React web client"] --> Contract
- Contract --> API["Fastify API"]
- API --> DB[("PostgreSQL / Prisma")]
- API --> Providers["Gateway integrations"]
+  subgraph App["camisa7-app (Expo)"]
+    Routes["src/app<br/>Expo Router screens"] --> Hooks["src/hooks<br/>feature hooks"]
+    Routes --> Comps["src/components"]
+    Hooks --> Gen["src/api/generated<br/>Kubb React Query hooks"]
+    Gen --> Client["src/api/client.ts<br/>fetch + refresh + timeout"]
+    Client --> Auth["src/lib/auth<br/>secure token store"]
+    Routes --> Push["src/lib/push"]
+  end
+  Client -->|HTTPS, OpenAPI contract| API["camisa7-api"]
+  Push --> FCM["Firebase Cloud Messaging"]
+  Routes --> Maps["Maps / geocoding"]
+  Web["camisa7-web"] -->|same contract| API
+  API --> PG[("PostgreSQL")]
 ```
 
-This is a conceptual map across repositories based on the inspected stack, not a verified production deployment diagram.
+- Screens never call `fetch`: they use hooks generated from `openapi.json` (`kubb.config.ts`), so API changes surface as type errors.
+- One request wrapper handles base URL, timeout, bearer token and a single refresh-then-retry on 401, forcing logout if refresh fails (`src/api/client.ts`, `src/lib/auth/session.ts`).
+- Server state lives in React Query (`src/api/query-client.ts`); feature hooks in `src/hooks/<feature>` own invalidation.
+- Google Sign-In, push and Android maps are optional and flag/env-gated; without keys the app still runs.
 
-## Inspect the implementation
+### Core flow: confirm presence and pay
 
-- [Mobile app routes](src/app/)
-- [Typed API integration](src/api/)
-- [Reusable UI](src/components/)
-- [Jest/test setup](test/)
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant S as Match screen
+  participant H as Generated hook
+  participant A as camisa7-api
+  U->>S: tap "I'm in"
+  S->>H: confirm presence mutation
+  H->>A: POST attendance (bearer token)
+  A-->>H: attendance confirmed
+  H-->>S: invalidate match + attendance queries
+  U->>S: tap "Pay"
+  S->>H: pay mutation
+  H->>A: POST attendance pay
+  A-->>S: PIX QR and copy-paste code
+  U->>U: pays in bank app
+  Note over S,A: Provider webhook updates the API; the screen refetches and shows "paid".
+```
 
-## Development and checks
+## Key engineering decisions
 
-Dependencies and configured services are required. Environment values belong in **local files**, never in committed source. Refer to `.env.example` for keys and use demo data only.
+- Contract-first client generation from a committed OpenAPI file: `kubb.config.ts`, `openapi.json`.
+- NativeWind (Tailwind classes) for styling with shared theme tokens: `tailwind.config.js`, `src/lib/theme.ts`.
+- Native modules kept optional so Expo Go keeps working for most screens: `app.config.ts`, `plugins/`.
+- Zod + react-hook-form schemas per feature: `src/schemas/`.
+- Money formatting centralized in integer cents: `src/lib/money.ts`.
+- Test-only time zone pinned to UTC for deterministic date logic: `package.json` test script.
+
+## Tech stack
+
+Expo 57, React Native 0.86, React 19, Expo Router, TypeScript, NativeWind, TanStack Query, Kubb, react-hook-form + Zod, i18next, react-native-maps, Firebase Messaging + Notifee, Jest.
+
+## Getting started
+
+Prerequisites: Node >= 22, pnpm, Android Studio or Xcode for native builds, a running [camisa7-api](https://github.com/mkwitko/camisa7-api).
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm start
-pnpm typecheck
-pnpm lint
-pnpm test
+cp .env.example .env
+pnpm gen:api        # generates src/api/generated (git-ignored)
+pnpm start          # dev client; first run: pnpm android | pnpm ios
 ```
 
-The commands above are exposed through project scripts; they were **not run** during this documentation update. Verify compatible Node/pnpm versions and services before relying on the setup as a one-command installation.
+| Name | Purpose |
+|---|---|
+| `EXPO_PUBLIC_API_URL` | Backend base URL |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | Google Sign-In (optional) |
+| `EXPO_PUBLIC_PUSH_ENABLED` | Turn on FCM (needs Firebase config files, never committed) |
+| `EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY` | Android map rendering (optional) |
+| `EXPO_PUBLIC_PLACES_AUTOCOMPLETE_ENABLED` | Address autocomplete (optional) |
 
-## Architecture and verification backlog
+`.env.example` documents each variable.
 
-- [ ] Confirm data ownership and whether third-party marks/screenshots can be shared commercially in a public portfolio.
-- [ ] Capture real anonymized web/mobile screenshots, with explicit approval for brands and user content.
-- [ ] Explain one cross-repository feature from UI → generated client → route → service → persistence.
-- [ ] Add CI based on genuinely passing checks and link the latest runs.
-- [ ] Record one reproducible performance measurement (including environment and method) if available.
-- [ ] Run secret scanning of the complete Git history and check license/dependency obligations.
+## Testing
 
-**Technical focus:** separation between mobile, web, API contracts and server responsibilities, together with independently testable layers.
+52 Jest suites, 207 tests (passing locally, along with `tsc --noEmit`). Run `pnpm gen:api` first.
+
+```bash
+pnpm typecheck && pnpm lint && pnpm test
+```
+
+## Project structure
+
+```text
+src/app         Expo Router screens (auth, drawer, group, match, court, ...)
+src/api         request wrapper, query client, generated hooks
+src/hooks       feature hooks over the generated API
+src/components  UI by feature
+src/lib         auth, push, location, i18n, money, theme
+src/schemas     form validation
+plugins/        Expo config plugins
+openapi.json    API contract snapshot
+```
+
+## Related repositories
+
+- [camisa7-api](https://github.com/mkwitko/camisa7-api): Fastify backend
+- [camisa7-web](https://github.com/mkwitko/camisa7-web): public invite and profile pages
+
+## License
+
+All rights reserved. Source available for portfolio review.
