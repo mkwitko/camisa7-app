@@ -3,7 +3,7 @@ name: expo-mobile-frontend
 description: "Use this skill when working on an Expo / React Native mobile frontend — Expo SDK 57 + React Native 0.86 + React 19 + Expo Router (file-based, typed routes) + TypeScript strict, consuming a Fastify backend via Kubb-generated types and TanStack Query hooks. Module-based folder structure (components/users/, hooks/users/, schemas/users/), not vertical slice. Triggers: tasks that mention or imply adding/modifying/debugging screens (file-based via Expo Router under src/app/, groups like (tabs)/ and (auth)/, typed routes), components in src/components/<module>/, UI primitives in src/components/ui/, hooks in src/hooks/<module>/, schemas in src/schemas/<module>/, forms (React Hook Form + Zod with i18n keys as messages), TanStack Query usage with per-module endpoint constants (USERS.queryKeyRoot) for invalidation, uploads (presigned URL flow with expo-file-system / expo-image-picker), custom JWT auth with Google Sign-In (@react-native-google-signin/google-signin gets a Google idToken → backend issues the app's access/refresh JWT; tokens in expo-secure-store; Authorization: Bearer; forceLogout; no email/password self-service), NO role/persona authorization — access is gated only by authentication (authenticated-only; the backend restricts data by ownership), NativeWind v4 styling (Tailwind for RN, global.css + tailwind.config.js + babel jsxImportSource, dark mode via colorScheme), dates with date-fns + date-fns-tz + expo-localization (backend is UTC), react-i18next (pt-BR active), Sentry (@sentry/react-native) + PostHog (posthog-react-native), Jest + jest-expo + @testing-library/react-native + MSW testing, Maestro E2E, EAS Build/Update/Submit for delivery (no Docker). Activate when the user mentions Expo Router, Stack.Protected, useRouter/Link/Href, NativeWind, className on RN components, colorScheme, Kubb-generated hooks (useBookingsList, useListUsers), USERS.queryKeyRoot, expo-secure-store, Google Sign-In, JWT/Bearer token, useAuth, RHF Zod resolver, expo-image, Reanimated, EAS, or the finance-app mobile repo by name. Do NOT use this skill for backend (Node.js/Fastify) tasks — that's a separate backend skill; do NOT use it for the web React (Vite/TanStack Router) frontend."
 ---
 
-# Expo Mobile Frontend — Padrão da empresa (React Native + Expo Router)
+# Expo Mobile Frontend — Padrão do projeto (React Native + Expo Router)
 
 > **Skill entry point.** Carregue este arquivo antes de qualquer task no app mobile. Os `.md` em `./references/` são as referências detalhadas — vá direto para elas quando precisar de profundidade. Cada referência é independente e pode ser lida sob demanda.
 >
@@ -13,9 +13,9 @@ description: "Use this skill when working on an Expo / React Native mobile front
 
 ## 1. Sobre o projeto
 
-App mobile **Expo + React Native** consumindo a API Node+Fastify do backend. Type-safety **ponta-a-ponta**: schema do backend (Zod) → OpenAPI → Kubb gera types e hooks → TanStack Query consome. Mesma disciplina do frontend web da empresa, adaptada ao runtime nativo.
+App mobile **Expo + React Native** consumindo a API Node+Fastify do backend. Type-safety **ponta-a-ponta**: schema do backend (Zod) → OpenAPI → Kubb gera types e hooks → TanStack Query consome. Mesma disciplina do frontend web do projeto, adaptada ao runtime nativo.
 
-**Esta arquitetura serve como referência/padrão para todos os apps Expo da empresa.** Decisões aqui devem ser conservadoras, justificadas, e otimizadas para serem **copiadas e adaptadas** por outros times.
+**Esta arquitetura serve como referência/padrão para todos os apps Expo do projeto.** Decisões aqui devem ser conservadoras, justificadas, e otimizadas para serem **copiadas e adaptadas** por outros times.
 
 **Pilares não-negociáveis** (nessa ordem de prioridade):
 
