@@ -381,7 +381,7 @@ export type AuthUser = { id: string; email: string; name: string };
 /** Sessão fake usada quando EXPO_PUBLIC_ENV === "test" (sem Google/backend real). */
 export const TEST_AUTH: { token: string; user: AuthUser } = {
   token: "test-token",
-  user: { id: "test-user", email: "test@b2breservas.com.br", name: "Test User" },
+  user: { id: "test-user", email: "test@example.com", name: "Test User" },
 };
 ```
 

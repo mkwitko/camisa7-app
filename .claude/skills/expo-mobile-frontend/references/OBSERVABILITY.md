@@ -35,7 +35,7 @@ Adicione o config plugin no `app.json` (habilita upload de source maps e símbol
   "expo": {
     "plugins": [
       ["@sentry/react-native/expo", {
-        "organization": "b2b-reservas",
+        "organization": "my-org",
         "project": "finance-app",
         "url": "https://sentry.io/"
       }]
