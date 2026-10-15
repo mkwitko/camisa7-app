@@ -23,6 +23,8 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Generate typed HTTP client
+        run: pnpm api:generate
       - name: Typecheck
         run: pnpm typecheck
       - name: Lint
