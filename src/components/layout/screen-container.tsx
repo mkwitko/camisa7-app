@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cssInterop } from "nativewind";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 import { StadiumBackground } from "@/components/ui/stadium-background";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ export function ScreenContainer({
   scroll = true,
   background,
   footer,
+  edges = ["top", "bottom"],
 }: {
   children: ReactNode;
   className?: string;
@@ -35,6 +36,7 @@ export function ScreenContainer({
    * visível (não rola com o resto da tela).
    */
   footer?: ReactNode;
+  edges?: Edge[];
 }) {
   const backdrop = background ?? <StadiumBackground intensity="subtle" />;
 
@@ -57,7 +59,7 @@ export function ScreenContainer({
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-bg" edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-bg" edges={edges}>
       <View className="absolute inset-0" pointerEvents="none">
         {backdrop}
       </View>
