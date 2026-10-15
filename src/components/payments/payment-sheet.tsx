@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { useTranslation } from "react-i18next";
 import { Image, View } from "react-native";
@@ -33,19 +33,15 @@ const PAID_STATUSES = new Set(["paid", "completed"]);
  */
 export function PaymentSheet({ visible, onClose, charge }: PaymentSheetProps) {
   const { t } = useTranslation("payments");
-  const [copied, setCopied] = useState(false);
-
-  // Reset o "copiado" quando um novo charge aparece (ex.: usuário reabre o
-  // sheet pra outra cobrança) — senão o botão continua mostrando a
-  // confirmação de uma cópia anterior.
-  useEffect(() => {
-    setCopied(false);
-  }, [charge?.brCode]);
+  // Guarda qual código foi copiado: um novo charge (brCode diferente) volta a
+  // mostrar "copiar" sem precisar de efeito pra resetar.
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const copied = copiedCode !== null && copiedCode === charge?.brCode;
 
   async function copyCode() {
     if (!charge) return;
     await Clipboard.setStringAsync(charge.brCode);
-    setCopied(true);
+    setCopiedCode(charge.brCode);
   }
 
   const statusLabel = charge
