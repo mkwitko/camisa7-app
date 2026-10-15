@@ -1,6 +1,6 @@
 # STYLING.md — NativeWind v4 (Tailwind para React Native)
 
-> **NativeWind** traz o modelo mental do Tailwind para o React Native: você escreve `className` em componentes RN (`View`, `Text`, `Pressable`) e um plugin de Babel + Metro converte isso em estilos nativos em build. Não é CSS no runtime — não há DOM, não há cascata. É a mesma "parity mental" do front web da empresa, adaptada ao runtime nativo.
+> **NativeWind** traz o modelo mental do Tailwind para o React Native: você escreve `className` em componentes RN (`View`, `Text`, `Pressable`) e um plugin de Babel + Metro converte isso em estilos nativos em build. Não é CSS no runtime — não há DOM, não há cascata. É a mesma "parity mental" do front web do projeto, adaptada ao runtime nativo.
 >
 > **Diferença central vs. o front web (Tailwind v4 CSS-first):** no mobile **existe** um `tailwind.config.js` de verdade. Não usamos `@theme` no CSS, nem a detecção automática de conteúdo da v4 web. NativeWind exige o preset (`nativewind/preset`), o `content` explícito e os tokens de tema em `theme.extend` do config. Veja [`../SKILL.md`](../SKILL.md) §2 para o porquê de NativeWind (não StyleSheet puro / Tamagui) e [`DECISIONS.md`](./DECISIONS.md).
 

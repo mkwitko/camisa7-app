@@ -9,7 +9,7 @@
 **Status:** Aceito · 2026
 
 ### Contexto
-Precisamos de um app mobile React Native para um produto B2B **autenticado**, com foco em DX, type-safety end-to-end, entrega rápida (OTA) e paridade mental com o frontend web da empresa.
+Precisamos de um app mobile React Native para um produto **autenticado**, com foco em DX, type-safety end-to-end, entrega rápida (OTA) e paridade mental com o frontend web do projeto.
 
 ### Opções
 
@@ -117,7 +117,7 @@ Precisamos de um sistema de estilo para RN com boa DX, dark mode fácil e, ideal
 ### Trade-offs
 - **Build-time only.** Classes totalmente dinâmicas (string montada em runtime) não funcionam como no web — use variantes/`cn()` com classes estáticas.
 - **Mais uma camada** (Babel plugin + Metro) que pode quebrar em upgrade de SDK — fixamos versões e testamos no bump.
-- **Menos "nativo"** que Tamagui em performance de estilo extrema; para o nosso caso (telas de CRUD B2B) é irrelevante.
+- **Menos "nativo"** que Tamagui em performance de estilo extrema; para o nosso caso (telas de CRUD) é irrelevante.
 
 ### Quando reconsiderar
 - App com necessidade de design system pesado + animações de layout intensas → avaliar Tamagui.
@@ -319,7 +319,7 @@ App começa em pt-BR mas precisa suportar novos idiomas sem refatoração. Nenhu
 
 ### Trade-offs
 - **Mais verboso** que alternativas com macros (LinguiJS).
-- **Bundle maior** — irrelevante no contexto mobile B2B.
+- **Bundle maior** — irrelevante neste app mobile.
 
 ### Quando reconsiderar
 - Necessidade de gerenciamento colaborativo de traduções via SaaS.
@@ -384,7 +384,7 @@ Saber como usuários usam o app, fazer rollout gradual e medir adoção.
 - **Custo previsível.**
 
 ### Trade-offs
-- **Cada feature isolada** perde para a melhor da categoria — para B2B com poucos MAUs, cobre confortavelmente.
+- **Cada feature isolada** perde para a melhor da categoria — para um app com poucos MAUs, cobre confortavelmente.
 - **Replay sobrepõe com Sentry** — mantemos o do PostHog desligado por padrão.
 
 ### Quando reconsiderar

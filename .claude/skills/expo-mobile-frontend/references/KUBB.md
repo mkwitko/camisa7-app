@@ -1,6 +1,6 @@
 # KUBB.md — Geração de API Client a partir do OpenAPI
 
-> O contrato entre backend e frontend é o **OpenAPI** gerado pelo Fastify. Kubb lê esse arquivo e gera **types + TanStack Query hooks** automaticamente. Você nunca escreve um `fetch` à mão. Padrão idêntico ao do frontend web da empresa — só o runtime muda (React Native, não browser). Contexto geral em [`../SKILL.md`](../SKILL.md).
+> O contrato entre backend e frontend é o **OpenAPI** gerado pelo Fastify. Kubb lê esse arquivo e gera **types + TanStack Query hooks** automaticamente. Você nunca escreve um `fetch` à mão. Padrão idêntico ao do frontend web do projeto — só o runtime muda (React Native, não browser). Contexto geral em [`../SKILL.md`](../SKILL.md).
 
 ---
 

@@ -1,6 +1,6 @@
 # Docs — Expo Mobile Frontend (React Native + Expo Router)
 
-Documentação de arquitetura de referência para os apps mobile **Expo / React Native** da empresa. Companheiro do backend Node+Fastify e do frontend web React.
+Documentação de arquitetura de referência para os apps mobile **Expo / React Native** do projeto. Companheiro do backend Node+Fastify e do frontend web React.
 
 > **Para começar, leia [`../SKILL.md`](../SKILL.md) primeiro.** É o documento mestre (entry point da skill) que Claude Code (e qualquer dev) deve carregar antes de qualquer task. Estes `.md` são as referências detalhadas, lidas sob demanda.
 >

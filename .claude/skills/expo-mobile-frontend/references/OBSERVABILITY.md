@@ -288,7 +288,7 @@ No Sentry, filtre por tag `trace_id` para achar os logs correspondentes do backe
 
 ### 5.2 Consentimento
 
-App B2B interno com login Google obrigatório → opt-in implícito (termos de uso). Se o app for ao público, adicione fluxo de consentimento antes de capturar (`posthog.optIn()`/`posthog.optOut()`).
+App com login Google obrigatório → opt-in implícito (termos de uso). Se o app for ao público, adicione fluxo de consentimento antes de capturar (`posthog.optIn()`/`posthog.optOut()`).
 
 ### 5.3 IP / geolocalização
 
