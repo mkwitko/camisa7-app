@@ -55,3 +55,5 @@ coverage/
 # Firebase native config (contêm identificadores do projeto) — nunca comitar.
 google-services.json
 GoogleService-Info.plist
+
+graphify-out/
