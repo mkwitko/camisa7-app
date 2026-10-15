@@ -39,6 +39,8 @@ describe("Landing pública de /j/:slug (deep link, sem login)", () => {
       currentStreak: 6,
       bestStreak: 8,
       achievements: [],
+      reputation: {},
+      trophies: [],
     });
 
     renderWithProviders(<SharedProfileScreen />);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Button } from "@/components/ui/button";
@@ -38,24 +38,22 @@ export function ReputationSection({ matchId, teammates, open }: ReputationSectio
   const reputationQuery = useGetReputation(matchId);
   const setReputation = useSetReputation(matchId);
 
-  const [selected, setSelected] = useState<Record<string, Set<Dimension>>>({});
-  const [hydrated, setHydrated] = useState(false);
-
-  // Hidrata uma única vez quando a leitura chega — depois disso o estado é
-  // só do usuário (evita sobrescrever uma seleção em andamento se a query
-  // refizer o fetch, ex.: refoco de tela).
-  useEffect(() => {
-    if (hydrated || !reputationQuery.data) return;
-    const next: Record<string, Set<Dimension>> = {};
-    for (const tag of reputationQuery.data.tags) {
-      next[tag.votedPlayerId] = new Set(tag.dimensions as Dimension[]);
+  // Edições do usuário; enquanto null, a seleção vem do que o servidor já tem.
+  // Hidratar por derivação (não por efeito) mantém uma seleção em andamento
+  // intacta se a query refizer o fetch, ex.: refoco de tela.
+  const [edited, setEdited] = useState<Record<string, Set<Dimension>> | null>(null);
+  const selected = useMemo(() => {
+    if (edited) return edited;
+    const fromServer: Record<string, Set<Dimension>> = {};
+    for (const tag of reputationQuery.data?.tags ?? []) {
+      fromServer[tag.votedPlayerId] = new Set(tag.dimensions as Dimension[]);
     }
-    setSelected(next);
-    setHydrated(true);
-  }, [hydrated, reputationQuery.data]);
+    return fromServer;
+  }, [edited, reputationQuery.data]);
 
   const toggle = (teammateId: string, dimension: Dimension) => {
-    setSelected((prev) => {
+    setEdited(() => {
+      const prev = selected;
       const current = new Set(prev[teammateId] ?? []);
       if (current.has(dimension)) current.delete(dimension);
       else current.add(dimension);

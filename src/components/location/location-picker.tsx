@@ -98,14 +98,19 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
     }
     const trimmed = query.trim();
     if (trimmed.length < 3) {
-      setSuggestions([]);
-      setSearching(false);
-      return;
+      // Limpa no próximo tick (não sincronamente dentro do efeito).
+      debounceRef.current = setTimeout(() => {
+        setSuggestions([]);
+        setSearching(false);
+      }, 0);
+      return () => {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+      };
     }
-    setSearching(true);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     let cancelled = false;
     debounceRef.current = setTimeout(async () => {
+      setSearching(true);
       const result = await searchPlaces(query);
       if (!cancelled) {
         setSuggestions(result.suggestions);

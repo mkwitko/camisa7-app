@@ -16,7 +16,7 @@ const career = {
 describe("ProgressCard", () => {
   it("shows the Vitórias stat with win rate", () => {
     render(<ProgressCard career={career} />);
-    expect(screen.getByText("Vitórias")).toBeOnTheScreen();
+    expect(screen.getByText("% Vitórias")).toBeOnTheScreen();
     expect(screen.getByText("6")).toBeOnTheScreen(); // wins
     expect(screen.getByText("60%")).toBeOnTheScreen(); // 6/10
   });

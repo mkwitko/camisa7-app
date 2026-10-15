@@ -1,7 +1,12 @@
+import type { ReactNode } from "react";
 import { screen, userEvent } from "@testing-library/react-native";
 import { useLocalSearchParams } from "expo-router";
 import GroupDetailScreen from "@/app/group/[id]";
-import { FAKE_MEMBER, resetGroupsMocks, setGroupReputationMock } from "../mocks/handlers";
+import {
+  FAKE_MEMBER,
+  resetGroupsMocks,
+  setGroupReputationMock,
+} from "../mocks/handlers";
 import { renderWithProviders } from "../utils/render";
 
 jest.mock("expo-router", () => {
@@ -11,6 +16,19 @@ jest.mock("expo-router", () => {
     useLocalSearchParams: jest.fn(() => ({ id: "group-1" })),
   };
 });
+
+// O organizador (dono do grupo mock, user-1) precisa estar logado pra a
+// reputação por membro ser buscada.
+jest.mock("@/hooks/auth/use-auth", () => ({
+  useAuth: () => ({
+    user: { id: "user-1", name: "Alice", email: "alice@futebol.app" },
+    isLoading: false,
+    isAuthenticated: true,
+  }),
+  AuthProvider: function AuthProvider({ children }: { children: ReactNode }) {
+    return children;
+  },
+}));
 
 describe("Reputação por membro (visão do organizador)", () => {
   beforeEach(() => {
@@ -23,7 +41,12 @@ describe("Reputação por membro (visão do organizador)", () => {
       {
         playerId: FAKE_MEMBER.player.id,
         name: FAKE_MEMBER.player.name,
-        reputation: { pontualidade: 12, educacao: 0, compromisso: 9, respeito: 0 },
+        reputation: {
+          pontualidade: 12,
+          educacao: 0,
+          compromisso: 9,
+          respeito: 0,
+        },
       },
     ]);
 

@@ -26,12 +26,12 @@ export function TrophyBadges({ trophies }: { trophies: readonly TrophyBadge[] })
   return (
     <View className="gap-3">
       <Text variant="display" className="text-lg">
-        {t("trophy.title")}
+        {t("trophy.title", { defaultValue: "Troféus" })}
       </Text>
       <View className="flex-row flex-wrap gap-2">
         {trophies.map((trophy, i) => (
           <Badge key={`${trophy.groupId}-${trophy.year}-${trophy.category}-${i}`} variant="ouro">
-            {t(CATEGORY_LABEL[trophy.category])} {trophy.year} · {trophy.groupName}
+            {t(CATEGORY_LABEL[trophy.category], { defaultValue: trophy.category })} {trophy.year} · {trophy.groupName}
           </Badge>
         ))}
       </View>
